@@ -44,6 +44,7 @@ func selectSales(client int) ([]Sale, error) {
 	for rows.Next() {
 		// Создаем новый объект структуры Sale
 		sale := Sale{}
+		// Построчно считываем результаты запроса и записываем данные в соответсвующие поля ранее созданной структуры
 		err := rows.Scan(&sale.Product, &sale.Volume, &sale.Date)
 		if err != nil {
 			fmt.Printf("selectSale rows.Scan error %v\n", err)
