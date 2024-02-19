@@ -33,6 +33,7 @@ func selectSales(client int) ([]Sale, error) {
 	defer db.Close()
 
 	// Создаем и выполняем запрос
+	// Также можно использовать функцию  QueryContext, как альтернативный вариант
 	rows, err := db.Query("SELECT product, volume, date FROM sales WHERE client = :id", sql.Named("id", client))
 	if err != nil {
 		fmt.Printf("selectSale db.Query error %v\n", err)
@@ -51,6 +52,12 @@ func selectSales(client int) ([]Sale, error) {
 			return nil, err
 		}
 		sales = append(sales, sale)
+	}
+	// Добавляем проверку rows.Err(), она проверяет, что цикл, в котором вызывается  rows.Next() завершился штатно,
+	// когда закончились все записи, а не в результате какой-то ошибки
+	if err := rows.Err(); err != nil {
+		fmt.Printf("selectSale for rows.Next error %v \n", err)
+		return nil, err
 	}
 	return sales, nil
 }
